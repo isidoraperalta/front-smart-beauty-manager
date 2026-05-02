@@ -1,0 +1,13 @@
+services:
+
+  # ── Frontend React (servido con nginx) ───────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      args:
+        # La URL del backend es embebida por Vite en el bundle en tiempo de compilación.
+        # El navegador del usuario corre en el host, por eso apunta a localhost:8080.
+        VITE_API_BACK_SBM_BASE_URL: http://localhost:8080
+    container_name: front_smart_beauty_manager
+    ports:
+      - "5173:80"
