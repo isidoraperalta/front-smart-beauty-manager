@@ -22,7 +22,6 @@ export default function Clientes() {
     success,
     showForm,
     setShowForm,
-    setSuccess,
     clearError,
     clearSuccess,
     handleGuardar,
@@ -35,14 +34,7 @@ export default function Clientes() {
 
   return (
     <Layout>
-      <div className="py-4">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h1>Clientes</h1>
-          <button className="btn btn-primary" onClick={() => setShowForm(true)}>
-            Agregar Cliente
-          </button>
-        </div>
-
+      <section className="sbm-module-page py-3 py-md-4">
         {/* Mensaje de error (desaparece al cerrar con la X) */}
         {error && (
           <div className="alert alert-danger alert-dismissible" role="alert">
@@ -59,23 +51,29 @@ export default function Clientes() {
           </div>
         )}
 
-        {/* Spinner de carga inicial */}
-        {loading ? (
-          <div className="d-flex align-items-center gap-2 py-3">
-            <div className="spinner-border spinner-border-sm text-primary" role="status" />
-            <span>Cargando clientes...</span>
+        <div className="card border-0 shadow-sm sbm-module-card">
+          <div className="card-header bg-white border-0">
+            <h1 className="h4 mb-0">Gestión de Clientes</h1>
           </div>
-        ) : (
-          // AgGridProvider es obligatorio para que AG Grid funcione en React
-          <AgGridProvider modules={[AllCommunityModule]}>
-            <ClientesGrid
-              clientes={clientes}
-              onAbrirConfirmacion={handleAbrirConfirmacionEliminar}
-              onEditarInline={handleEditarInline}
-              onExportSuccess={() => setSuccess('Tabla exportada correctamente')}
-            />
-          </AgGridProvider>
-        )}
+
+          <div className="card-body">
+            {loading ? (
+              <div className="d-flex align-items-center gap-2 py-3">
+                <div className="spinner-border spinner-border-sm text-primary" role="status" />
+                <span>Cargando clientes...</span>
+              </div>
+            ) : (
+              <AgGridProvider modules={[AllCommunityModule]}>
+                <ClientesGrid
+                  clientes={clientes}
+                  onAbrirConfirmacion={handleAbrirConfirmacionEliminar}
+                  onEditarInline={handleEditarInline}
+                  onAdd={() => setShowForm(true)}
+                />
+              </AgGridProvider>
+            )}
+          </div>
+        </div>
 
         {/* Modal de creación — se monta solo cuando showForm es true */}
         {showForm && (
@@ -96,7 +94,7 @@ export default function Clientes() {
             cargando={loading}
           />
         )}
-      </div>
+      </section>
     </Layout>
   )
 }

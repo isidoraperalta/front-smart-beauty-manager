@@ -39,7 +39,7 @@ export default function ConfirmarEliminacionModal({
               ¿Estás seguro de que deseas eliminar a <strong>{nombreCliente}</strong>?
             </p>
             <p className="text-muted small mb-0">
-              Esta acción no se puede deshacer. Se eliminarán todos los datos asociados.
+              Esta acción no se puede deshacer. Si existen registros relacionados, el sistema bloqueará la eliminación.
             </p>
           </div>
 
@@ -54,7 +54,7 @@ export default function ConfirmarEliminacionModal({
             </button>
             <button
               type="button"
-              className="btn btn-danger"
+              className="btn sbm-btn-delete"
               onClick={onConfirmar}
               disabled={cargando}
             >

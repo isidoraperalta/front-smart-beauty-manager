@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 // AgregarClienteModal (también sirve para editar si se pasa un cliente existente)
 //
@@ -7,13 +7,15 @@ import { useState, useEffect } from 'react'
 //   onGuardar → recibe el formData al hacer submit
 //   onCerrar  → cierra el modal sin guardar
 export default function AgregarClienteModal({ cliente, onGuardar, onCerrar }) {
-  const [formData, setFormData] = useState({ nombre: '', email: '', telefono: '' })
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    telefono: '',
+    direccion: '',
+    fechaNacimiento: '',
+    notas: '',
+  })
   const [errores, setErrores]   = useState({})
-
-  // Si recibimos un cliente existente (modo edición), precargamos el formulario
-  useEffect(() => {
-    if (cliente) setFormData(cliente)
-  }, [cliente])
 
   // Valida cada campo y acumula los mensajes de error en un objeto
   const validar = () => {
@@ -100,13 +102,48 @@ export default function AgregarClienteModal({ cliente, onGuardar, onCerrar }) {
                 {errores.telefono && <div className="invalid-feedback d-block">{errores.telefono}</div>}
               </div>
 
+              <div className="mb-3">
+                <label className="form-label">Dirección</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="direccion"
+                  value={formData.direccion || ''}
+                  onChange={handleChange}
+                  placeholder="Ej: Calle 123 #45-67"
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Fecha de nacimiento</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  name="fechaNacimiento"
+                  value={formData.fechaNacimiento || ''}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Notas</label>
+                <textarea
+                  className="form-control"
+                  rows="3"
+                  name="notas"
+                  value={formData.notas || ''}
+                  onChange={handleChange}
+                  placeholder="Notas opcionales del cliente"
+                />
+              </div>
+
             </div>
 
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={onCerrar}>
                 Cancelar
               </button>
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn sbm-btn-primary">
                 {cliente ? 'Actualizar' : 'Guardar'}
               </button>
             </div>

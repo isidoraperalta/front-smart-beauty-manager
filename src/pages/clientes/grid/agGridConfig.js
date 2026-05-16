@@ -1,3 +1,15 @@
+import { themeQuartz } from 'ag-grid-community'
+
+// ── Tema personalizado con paleta teal ───────────────────────────────────────
+export const sbmTheme = themeQuartz.withParams({
+  accentColor: '#239089',
+  selectedRowBackgroundColor: 'rgba(35, 144, 137, 0.08)',
+  rowHoverColor: 'rgba(35, 144, 137, 0.04)',
+  rangeSelectionBorderColor: '#4bb0a9',
+  checkboxCheckedBackgroundColor: '#239089',
+  checkboxCheckedBorderColor: '#239089',
+})
+
 // ── Textos en español para AG Grid ───────────────────────────────────────────
 // AG Grid es una librería en inglés; este objeto sobreescribe cada texto
 // de la interfaz (paginación, filtros, menús) con su traducción en español.

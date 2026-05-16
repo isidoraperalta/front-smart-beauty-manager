@@ -1,8 +1,7 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
-import { themeQuartz } from 'ag-grid-community'
+import { sbmTheme, LOCALE_SPANISH, DEFAULT_COL_DEF } from './agGridConfig'
 import ClientesGridToolbar from './ClientesGridToolbar'
-import { LOCALE_SPANISH, DEFAULT_COL_DEF } from './agGridConfig'
 import { useClientesColumnDefs } from './useClientesColumnDefs'
 
 // ── AccionesCellRenderer ──────────────────────────────────────────────────────
@@ -12,7 +11,7 @@ import { useClientesColumnDefs } from './useClientesColumnDefs'
 function AccionesCellRenderer({ data, context }) {
   return (
     <button
-      className="btn btn-sm btn-danger"
+      className="btn btn-sm sbm-btn-delete"
       onClick={() => context.onAbrirConfirmacion(data.id)}
     >
       Eliminar
@@ -26,6 +25,10 @@ const COLUMNAS_TOGGLE = [
   { field: 'nombre',   label: 'Nombre' },
   { field: 'email',    label: 'Email' },
   { field: 'telefono', label: 'Teléfono' },
+  { field: 'direccion', label: 'Dirección' },
+  { field: 'fechaNacimiento', label: 'Nacimiento' },
+  { field: 'fechaRegistro', label: 'Registro' },
+  { field: 'notas', label: 'Notas' },
 ]
 
 // ── ClientesGrid ──────────────────────────────────────────────────────────────
@@ -36,7 +39,7 @@ const COLUMNAS_TOGGLE = [
 //   clientes           → array de clientes a mostrar
 //   onAbrirConfirmacion → abre el modal de confirmación con el ID recibido
 //   onEditarInline      → guarda los cambios de una celda editada
-export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarInline, onExportSuccess }) {
+export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarInline, onAdd }) {
   const gridRef   = useRef()   // acceso a la API interna de AG Grid (export, etc.)
   const pickerRef = useRef()   // referencia al dropdown de columnas (para cerrar al clic fuera)
 
@@ -48,6 +51,10 @@ export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarIn
     nombre:   true,
     email:    true,
     telefono: true,
+    direccion: true,
+    fechaNacimiento: true,
+    fechaRegistro: true,
+    notas: false,
   })
 
   // Cierra el dropdown de columnas al hacer clic en cualquier parte fuera de él
@@ -70,21 +77,29 @@ export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarIn
   // Se ejecuta cuando el usuario termina de editar una celda en el grid.
   // useCallback evita recrear la función en cada render (optimización de rendimiento).
   const onCellValueChanged = useCallback((params) => {
-    const { id, nombre, email, telefono } = params.data
-    onEditarInline(id, { nombre, email, telefono })
+    const {
+      id,
+      nombre,
+      email,
+      telefono,
+      direccion,
+      fechaNacimiento,
+      notas,
+    } = params.data
+
+    onEditarInline(id, {
+      nombre,
+      email,
+      telefono,
+      direccion,
+      fechaNacimiento,
+      notas,
+    })
   }, [onEditarInline])
 
   // Muestra/oculta una columna al marcar/desmarcar su checkbox
   const toggleColumn = (field) => {
     setColsVisible(prev => ({ ...prev, [field]: !prev[field] }))
-  }
-
-  // Exporta a CSV usando la API nativa de AG Grid.
-  // Solo exporta las filas visibles (con los filtros aplicados).
-  const handleExportCsv = () => {
-    const fecha = new Date().toISOString().slice(0, 10)
-    gridRef.current?.api?.exportDataAsCsv({ fileName: `clientes_${fecha}.csv` })
-    onExportSuccess?.()
   }
 
   // "context" es el objeto que AG Grid inyecta en todos los cell renderers.
@@ -97,32 +112,34 @@ export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarIn
   const getRowId = useCallback((params) => String(params.data.id), [])
 
   return (
-    <div>
+    <div className="sbm-grid-wrapper">
       <ClientesGridToolbar
         quickFilter={quickFilter}
         onQuickFilterChange={setQuickFilter}
         colsVisible={colsVisible}
         onToggleColumn={toggleColumn}
-        onExportCsv={handleExportCsv}
+        onAdd={onAdd}
+        addLabel="Agregar Cliente"
         COLUMNAS_TOGGLE={COLUMNAS_TOGGLE}
         showColumnPicker={showColumnPicker}
         onToggleColumnPicker={() => setShowColumnPicker(prev => !prev)}
         pickerRef={pickerRef}
       />
 
-      <div style={{ height: 520, width: '100%' }}>
+      <div className="sbm-grid-frame">
         <AgGridReact
           ref={gridRef}
           rowData={clientes}
           columnDefs={colDefs}
           defaultColDef={defaultColDef}
           getRowId={getRowId}
-          theme={themeQuartz}
+          theme={sbmTheme}
           localeText={LOCALE_SPANISH}
           quickFilterText={quickFilter}
           pagination={true}
           paginationPageSize={10}
           paginationPageSizeSelector={[5, 10, 20, 50]}
+          domLayout="normal"
           stopEditingWhenCellsLoseFocus={true}
           onCellValueChanged={onCellValueChanged}
           context={context}

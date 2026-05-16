@@ -22,6 +22,13 @@ export function useClientes() {
   const [showForm, setShowForm]         = useState(false)
   const [clienteAEliminar, setClienteAEliminar] = useState(null) // ID del cliente pendiente de eliminar
 
+  const sanitizeClientePayload = (formData) => ({
+    ...formData,
+    direccion: formData.direccion?.trim() || null,
+    fechaNacimiento: formData.fechaNacimiento || null,
+    notas: formData.notas?.trim() || null,
+  })
+
   // Auto-cierra el mensaje de éxito después de 3 segundos
   useEffect(() => {
     if (!success) return
@@ -48,13 +55,14 @@ export function useClientes() {
 
   // Carga inicial: se ejecuta una sola vez cuando el componente se monta
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     cargarClientes()
   }, [cargarClientes])
 
   // ── Crear cliente (desde el modal de formulario) ─────────────────────────
   const handleGuardar = async (formData) => {
     try {
-      const nuevo = await clientesService.create(formData)
+      const nuevo = await clientesService.create(sanitizeClientePayload(formData))
       // Añadimos al array sin volver a cargar del backend: [...prev, nuevo]
       // "prev" es el estado anterior; nunca se muta directamente (inmutabilidad)
       setClientes(prev => [...prev, nuevo])
@@ -71,8 +79,9 @@ export function useClientes() {
   // así el usuario puede ver qué falló y corregirlo.
   const handleEditarInline = async (id, cambios) => {
     try {
-      await clientesService.update(id, cambios)
-      setClientes(prev => prev.map(c => c.id === id ? { ...c, ...cambios } : c))
+      const payload = sanitizeClientePayload(cambios)
+      await clientesService.update(id, payload)
+      setClientes(prev => prev.map(c => c.id === id ? { ...c, ...payload } : c))
       setSuccess('Cliente actualizado correctamente')
     } catch (err) {
       setError('Error al actualizar: ' + err.message)

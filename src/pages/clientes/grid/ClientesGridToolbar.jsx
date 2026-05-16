@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 // Barra de herramientas del grid de clientes. Contiene:
 //   1. Buscador rápido (filtra filas en tiempo real)
 //   2. Selector de columnas (checkbox por columna)
-//   3. Botón de exportar a CSV
 //
 // Toda la lógica de estado vive en ClientesGrid; este componente solo
 // recibe valores y callbacks por props, lo que lo hace muy fácil de testear.
@@ -14,7 +13,8 @@ export default function ClientesGridToolbar({
   onQuickFilterChange,
   colsVisible,
   onToggleColumn,
-  onExportCsv,
+  onAdd,
+  addLabel,
   COLUMNAS_TOGGLE,
   showColumnPicker,
   onToggleColumnPicker,
@@ -27,8 +27,8 @@ export default function ClientesGridToolbar({
       <input
         type="text"
         className="form-control"
-        style={{ maxWidth: 320 }}
-        placeholder="Buscar por nombre, email, teléfono..."
+        style={{ maxWidth: 260 }}
+        placeholder="Buscar en la tabla..."
         value={quickFilter}
         onChange={e => onQuickFilterChange(e.target.value)}
       />
@@ -63,13 +63,8 @@ export default function ClientesGridToolbar({
         )}
       </div>
 
-      {/* 3. Exportar — descarga los datos filtrados actuales como CSV */}
-      <button
-        className="btn btn-success"
-        onClick={onExportCsv}
-        title="Exportar los datos filtrados a CSV (se puede abrir en Excel)"
-      >
-        📥 Exportar CSV
+      <button type="button" className="btn sbm-btn-primary ms-auto" onClick={onAdd}>
+        {addLabel}
       </button>
 
     </div>
@@ -81,7 +76,8 @@ ClientesGridToolbar.propTypes = {
   onQuickFilterChange: PropTypes.func.isRequired,
   colsVisible:         PropTypes.object.isRequired,
   onToggleColumn:      PropTypes.func.isRequired,
-  onExportCsv:         PropTypes.func.isRequired,
+  onAdd:               PropTypes.func.isRequired,
+  addLabel:            PropTypes.string.isRequired,
   COLUMNAS_TOGGLE:     PropTypes.arrayOf(PropTypes.object).isRequired,
   showColumnPicker:    PropTypes.bool.isRequired,
   onToggleColumnPicker:PropTypes.func.isRequired,

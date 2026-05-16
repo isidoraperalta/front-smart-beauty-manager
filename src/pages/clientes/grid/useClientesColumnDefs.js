@@ -38,7 +38,38 @@ export function useClientesColumnDefs(colsVisible, AccionesCellRenderer) {
       minWidth: 130,
     }] : []),
 
-    // La columna de acciones siempre está visible y fija a la derecha
+    ...(colsVisible.direccion ? [{
+      field: 'direccion',
+      headerName: 'Dirección',
+      editable: true,
+      flex: 1,
+      minWidth: 180,
+    }] : []),
+
+    ...(colsVisible.fechaNacimiento ? [{
+      field: 'fechaNacimiento',
+      headerName: 'Nacimiento',
+      editable: true,
+      flex: 1,
+      minWidth: 140,
+    }] : []),
+
+    ...(colsVisible.fechaRegistro ? [{
+      field: 'fechaRegistro',
+      headerName: 'Registro',
+      editable: false,
+      flex: 1,
+      minWidth: 130,
+    }] : []),
+
+    ...(colsVisible.notas ? [{
+      field: 'notas',
+      headerName: 'Notas',
+      editable: true,
+      flex: 1.2,
+      minWidth: 220,
+    }] : []),
+
     {
       headerName: 'Acciones',
       cellRenderer: AccionesCellRenderer,

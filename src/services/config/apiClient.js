@@ -2,6 +2,11 @@
 // En desarrollo: http://localhost:8080
 const API_BASE_URL = import.meta.env.VITE_API_BACK_SBM_BASE_URL
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('sbm_auth_token')
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
 // ── Extractor de mensajes de error ────────────────────────────────────────────
 // El backend Spring Boot puede devolver dos formatos de error:
 //
@@ -36,7 +41,11 @@ const getErrorMessage = async (response) => {
 const apiClient = {
 
   get: async (endpoint) => {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`)
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    })
     if (!response.ok) throw new Error(await getErrorMessage(response))
     return response.json()
   },
@@ -44,7 +53,10 @@ const apiClient = {
   post: async (endpoint, data) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
       body: JSON.stringify(data),
     })
     if (!response.ok) throw new Error(await getErrorMessage(response))
@@ -54,7 +66,10 @@ const apiClient = {
   put: async (endpoint, data) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
       body: JSON.stringify(data),
     })
     if (!response.ok) throw new Error(await getErrorMessage(response))
@@ -64,6 +79,9 @@ const apiClient = {
   delete: async (endpoint) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'DELETE',
+      headers: {
+        ...getAuthHeaders(),
+      },
     })
     if (!response.ok) throw new Error(await getErrorMessage(response))
     return response.ok
