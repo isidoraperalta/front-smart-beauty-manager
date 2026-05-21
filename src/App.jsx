@@ -2,7 +2,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Landing from './pages/Landing'
 import Home from './pages/Home'
 import Clientes from './pages/clientes/Clientes'
+import Citas from './pages/citas/Citas'
 import ServiciosGestion from './pages/servicios/ServiciosGestion'
+import Informaciones from './pages/informaciones/Informaciones'
 import Login from './pages/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicOnlyRoute from './components/PublicOnlyRoute'
@@ -24,7 +26,9 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/clientes" element={<Clientes />} />
+          <Route path="/citas" element={<Citas />} />
           <Route path="/servicios" element={<ServiciosGestion />} />
+          <Route path="/informaciones" element={<Informaciones />} />
         </Route>
       </Routes>
     </Router>

@@ -37,8 +37,14 @@ export default function Navbar() {
           <button type="button" className={`sbm-nav-link ${isActive('/clientes') ? 'sbm-nav-link-active' : ''}`} onClick={() => navigate('/clientes')}>
             Clientes
           </button>
+          <button type="button" className={`sbm-nav-link ${isActive('/citas') ? 'sbm-nav-link-active' : ''}`} onClick={() => navigate('/citas')}>
+            Citas
+          </button>
           <button type="button" className={`sbm-nav-link ${isActive('/servicios') ? 'sbm-nav-link-active' : ''}`} onClick={() => navigate('/servicios')}>
             Servicios
+          </button>
+          <button type="button" className={`sbm-nav-link ${isActive('/informaciones') ? 'sbm-nav-link-active' : ''}`} onClick={() => navigate('/informaciones')}>
+            Informaciones
           </button>
           <button type="button" className="sbm-nav-link sbm-nav-logout" onClick={handleLogout}>
             Cerrar sesión

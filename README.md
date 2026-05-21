@@ -1,47 +1,67 @@
-# 💇 Front Smart Beauty Manager
+# 🌸 Front Smart Beauty Manager
 
-## 📋 Prerrequisitos
+## 📋 Requisitos por opción de ejecución
 
-| Herramienta | Versión mínima | Instalación |
-|-------------|---------------|-------------|
-| **📦 Node.js** | 20.19.0           | [nodejs.org](https://nodejs.org) - Si es que se levanta sin **docker** |
-| **🐳 Docker**  | cualquiera    | [docker.com](https://www.docker.com/products/docker-desktop) - solo para la opción Docker |
-| **⚙️ Backend** | -            | El backend debe estar corriendo en `localhost:8080` |
+| Herramienta | Opción 1<br>(Local) | Opción 2<br>(Docker) |
+|---|---------|----------|
+| 📦 Node.js 20+ | ✅ | ❌ |
+| 🐳 Docker | ❌ | ✅ |
+
+**Links de descargas:** [Node.js](https://nodejs.org) • [Docker](https://www.docker.com/products/docker-desktop)
 
 ---
 
-## 🚀 Opción A — Ejecución local (desarrollo)
+## 🚀 Cómo ejecutar
 
+### 💻 Opción 1: Local (Frontend en local)
+
+Necesitas Node.js 20+ instalado localmente. El backend debe estar corriendo en `localhost:8080`.
+
+**1️⃣ Instalar dependencias:**
 ```bash
-# 1. 📥 Instalar dependencias
 npm install
+```
 
-# 2. 🔧 Crear el archivo de entorno (si no existe)
-#    Contenido: VITE_API_BACK_SBM_BASE_URL=http://localhost:8080
-cp .env.example .env   # o créalo manualmente
+**2️⃣ Crear archivo de entorno:**
+```bash
+# El archivo .env debe contener:
+VITE_API_BACK_SBM_BASE_URL=http://localhost:8080
+```
 
-# 3. ▶️ Iniciar el servidor de desarrollo
+**3️⃣ Ejecutar el frontend:**
+```bash
 npm run dev
-#    Abre http://localhost:5173
 ```
+
+✅ Front: `http://localhost:5173`
 
 ---
 
-## 🐳 Opción B — Docker
+### 🐳 Opción 2: Docker (Frontend y Backend en Docker)
 
+Solo necesitas Docker instalado localmente.
+
+**🚀 Ejecutar:**
 ```bash
-# 🔨 Construye la imagen y levanta el contenedor
 docker compose up -d
-#    Abre http://localhost:5173
 ```
 
+✅ Front: `http://localhost:5173`
+
+**📝 Después de cambiar código (forzar recompilación):**
 ```bash
-# ⛔ Detener contenedor
-docker compose down
+docker compose up -d --build
+```
+
+**🛠️ Gestión:**
+```bash
+docker compose logs -f frontend    # 📊 Ver logs
+docker compose down                # ⛔ Parar
 ```
 
 ---
-## 📁 Estructura de carpetas
+
+## 📂 Estructura de carpetas
 
 ```
 front-smart-beauty-manager/
@@ -54,26 +74,48 @@ front-smart-beauty-manager/
 │   ├── pages/
 │   │   ├── Landing.jsx                                         # Página de entrada
 │   │   ├── Home.jsx                                            # Dashboard principal
-│   │   └── clientes/
-│   │       ├── Clientes.jsx                                    # Orquestador: ensambla hook + grid + modales
-│   │       ├── hooks/
-│   │       │   └── useClientes.js                              # Custom hook con todo el estado y la lógica del módulo
-│   │       ├── grid/
-│   │       │   ├── ClientesGrid.jsx                            # Tabla AG Grid + coordinación de toolbar y context
-│   │       │   ├── ClientesGridToolbar.jsx                     # Barra: buscador, selector de columnas, exportar CSV
-│   │       │   ├── agGridConfig.js                             # Locale español (40+ traducciones) + defaultColDef
-│   │       │   └── useClientesColumnDefs.js                    # Hook que calcula columnas según visibilidad
-│   │       └── modal/
-│   │           ├── AgregarClienteModal.jsx                     # Formulario Bootstrap para crear un cliente
-│   │           └── ConfirmarEliminacionModal.jsx               # Diálogo de confirmación antes de borrar
+│   │   ├── clientes/
+│   │   │   ├── Clientes.jsx                                    # Orquestador: ensambla hook + grid + modales
+│   │   │   ├── hooks/
+│   │   │   │   └── useClientes.js                              # Custom hook con todo el estado y la lógica del módulo
+│   │   │   ├── grid/
+│   │   │   │   ├── ClientesGrid.jsx                            # Tabla AG Grid + coordinación de toolbar y context
+│   │   │   │   ├── ClientesGridToolbar.jsx                     # Barra: buscador, selector de columnas, exportar CSV
+│   │   │   │   ├── agGridConfig.js                             # Locale español (40+ traducciones) + defaultColDef
+│   │   │   │   └── useClientesColumnDefs.js                    # Hook que calcula columnas según visibilidad
+│   │   │   └── modal/
+│   │   │       ├── AgregarClienteModal.jsx                     # Formulario Bootstrap para crear un cliente
+│   │   │       └── ConfirmarEliminacionModal.jsx               # Diálogo de confirmación antes de borrar
+│   │   ├── citas/
+│   │   │   └── Citas.jsx                                       # Módulo de citas (en desarrollo)
+│   │   ├── servicios/
+│   │   │   ├── ServiciosGestion.jsx                            # Orquestador del módulo de servicios
+│   │   │   ├── hooks/
+│   │   │   │   └── useServiciosModule.js                       # Custom hook con estado y lógica de servicios
+│   │   │   ├── grid/
+│   │   │   │   ├── ServiciosGrid.jsx                           # Tabla AG Grid para servicios
+│   │   │   │   ├── ServiciosGridToolbar.jsx                    # Toolbar: búsqueda, columnas, exportar
+│   │   │   │   ├── agGridConfig.js                             # Configuración de locale y estilos
+│   │   │   │   └── useServiciosColumnDefs.js                   # Hook que calcula columnas dinámicamente
+│   │   │   ├── config/
+│   │   │   │   └── serviciosConfig.js                          # Configuración del módulo (campos, validaciones)
+│   │   │   └── modal/
+│   │   │       ├── ServiciosModal.jsx                          # Formulario para crear/editar servicios
+│   │   │       └── ConfirmarEliminacionServiciosModal.jsx      # Diálogo de confirmación
+│   │   └── informaciones/
+│   │       └── Informaciones.jsx                               # Módulo de estadísticas y gráficos (en desarrollo)
 │   └── services/
 │       ├── index.js                                            # Punto de importación único
 │       ├── config/
 │       │   └── apiClient.js                                    # Cliente HTTP centralizado: GET/POST/PUT/DELETE + manejo de errores
 │       └── endpoints/
-│           ├── clientes.js                                     # CRUD del endpoint /clientes
+│           ├── acciones.js                                     # Endpoint de acciones
+│           ├── auth.js                                         # Endpoint de autenticación
+│           ├── categorias.js                                   # Endpoint de categorías
 │           ├── citas.js                                        # CRUD del endpoint /citas
-│           └── servicios.js                                    # CRUD del endpoint /servicios
+│           ├── clientes.js                                     # CRUD del endpoint /clientes
+│           ├── servicios.js                                    # CRUD del endpoint /servicios
+│           └── tipos.js                                        # Endpoint de tipos
 ├── .env                                                        # Variables de entorno (URL del backend)
 ├── vite.config.js                                              # Configuración de Vite y alias @ → ./src
 ├── docker-compose.yml                                          # Orquestación: frontend servido con nginx
@@ -119,8 +161,32 @@ Los hooks importan el servicio que necesitan desde `services/index.js`.
 
 ---
 
-## 🔮 Por implementar
-- 📅 Módulo Home: Calendario (investigar librerías) de las citas de la semana. 
-- 📋 Módulo Citas: Tabla con AG Grid como módulo clientes
-- 💇 Módulo Servicios: Tabla con AG Grid como módulo clientes
-- 📊 Módulo Informaciones: Gráficos (investigar librerías) con informaciones
+## 📚 Librerías utilizadas
+
+### Dependencias principales
+
+| Librería | Versión | Propósito |
+|----------|---------|----------|
+| **React** | ^19.2.5 | Framework de UI |
+| **React Router DOM** | ^7.14.2 | Enrutamiento y navegación |
+| **Bootstrap** | ^5.3.8 | Estilos CSS y componentes UI |
+| **AG Grid Community** | ^35.2.1 | Tablas y grillas avanzadas |
+| **AG Grid React** | ^35.2.1 | Binding de AG Grid para React |
+| **PropTypes** | ^15.8.1 | Validación de tipos en props |
+
+### Dependencias de desarrollo
+
+| Herramienta | Propósito |
+|-------------|----------|
+| **Vite** | Bundler y servidor de desarrollo rápido |
+| **ESLint** | Linter para detectar errores y mantener código limpio |
+| **@vitejs/plugin-react** | Plugin de React para Vite |
+
+### 🔄 Pendientes de implementar
+
+| Librería | Propósito | Estado |
+|----------|----------|--------|
+| **Calendario** | Mostrar citas de la semana en el módulo Home | Por evaluar |
+| **Gráficos** | Mostrar estadísticas y análisis en el módulo Informaciones | Por evaluar |
+
+**Instalación automática:** `npm install`
