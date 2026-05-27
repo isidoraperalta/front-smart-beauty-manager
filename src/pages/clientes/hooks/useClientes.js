@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { toast } from 'react-toastify'
 import { clientesService } from '@/services'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -17,8 +18,6 @@ import { clientesService } from '@/services'
 export function useClientes() {
   const [clientes, setClientes]         = useState([])
   const [loading, setLoading]           = useState(false)
-  const [error, setError]               = useState(null)
-  const [success, setSuccess]           = useState(null) // mensaje de operación exitosa
   const [showForm, setShowForm]         = useState(false)
   const [clienteAEliminar, setClienteAEliminar] = useState(null) // ID del cliente pendiente de eliminar
 
@@ -29,25 +28,17 @@ export function useClientes() {
     notas: formData.notas?.trim() || null,
   })
 
-  // Auto-cierra el mensaje de éxito después de 3 segundos
-  useEffect(() => {
-    if (!success) return
-    const timer = setTimeout(() => setSuccess(null), 3000)
-    return () => clearTimeout(timer) // limpia el timer si el componente se desmonta antes
-  }, [success])
-
   // ── Cargar todos los clientes desde el backend ───────────────────────────
   // useCallback evita que esta función se recree en cada render.
   // Si no lo usáramos, el useEffect de abajo se ejecutaría en bucle
   // (useEffect ve una función "nueva" → vuelve a ejecutar → nueva función...).
   const cargarClientes = useCallback(async () => {
     setLoading(true)
-    setError(null)
     try {
       const data = await clientesService.getAll()
       setClientes(data)
     } catch (err) {
-      setError('Error al cargar clientes: ' + err.message)
+      toast.error('Error al cargar clientes: ' + err.message)
     } finally {
       setLoading(false)
     }
@@ -67,9 +58,9 @@ export function useClientes() {
       // "prev" es el estado anterior; nunca se muta directamente (inmutabilidad)
       setClientes(prev => [...prev, nuevo])
       setShowForm(false)
-      setSuccess('Cliente creado correctamente')
+      toast.success('Cliente creado correctamente')
     } catch (err) {
-      setError('Error al crear cliente: ' + err.message)
+      toast.error('Error al crear cliente: ' + err.message)
     }
   }
 
@@ -82,9 +73,9 @@ export function useClientes() {
       const payload = sanitizeClientePayload(cambios)
       await clientesService.update(id, payload)
       setClientes(prev => prev.map(c => c.id === id ? { ...c, ...payload } : c))
-      setSuccess('Cliente actualizado correctamente')
+      toast.success('Cliente actualizado correctamente')
     } catch (err) {
-      setError('Error al actualizar: ' + err.message)
+      toast.error('Error al actualizar: ' + err.message)
     }
   }
 
@@ -101,9 +92,9 @@ export function useClientes() {
     try {
       await clientesService.delete(clienteAEliminar)
       setClientes(prev => prev.filter(c => c.id !== clienteAEliminar))
-      setSuccess('Cliente eliminado correctamente')
+      toast.success('Cliente eliminado correctamente')
     } catch (err) {
-      setError('Error al eliminar: ' + err.message)
+      toast.error('Error al eliminar: ' + err.message)
     } finally {
       // El modal se cierra siempre, haya error o no
       setClienteAEliminar(null)
@@ -113,19 +104,11 @@ export function useClientes() {
   // Cancela sin eliminar
   const handleCancelarEliminar = () => setClienteAEliminar(null)
 
-  const clearError   = () => setError(null)
-  const clearSuccess = () => setSuccess(null)
-
   return {
     clientes,
     loading,
-    error,
-    success,
     showForm,
     setShowForm,
-    setSuccess,
-    clearError,
-    clearSuccess,
     handleGuardar,
     handleEditarInline,
     handleAbrirConfirmacionEliminar,

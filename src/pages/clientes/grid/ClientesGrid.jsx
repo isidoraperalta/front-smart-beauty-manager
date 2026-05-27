@@ -1,8 +1,9 @@
-import { useState, useRef, useMemo, useCallback, useEffect } from 'react'
+import { useState, useRef, useMemo, useCallback } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { sbmTheme, LOCALE_SPANISH, DEFAULT_COL_DEF } from './agGridConfig'
 import ClientesGridToolbar from './ClientesGridToolbar'
 import { useClientesColumnDefs } from './useClientesColumnDefs'
+import { useClickOutside } from '@/hooks/useClickOutside'
 
 // ── AccionesCellRenderer ──────────────────────────────────────────────────────
 // Componente que AG Grid renderiza en la columna "Acciones" de cada fila.
@@ -39,7 +40,7 @@ const COLUMNAS_TOGGLE = [
 //   clientes           → array de clientes a mostrar
 //   onAbrirConfirmacion → abre el modal de confirmación con el ID recibido
 //   onEditarInline      → guarda los cambios de una celda editada
-export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarInline, onAdd }) {
+export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarInline }) {
   const gridRef   = useRef()   // acceso a la API interna de AG Grid (export, etc.)
   const pickerRef = useRef()   // referencia al dropdown de columnas (para cerrar al clic fuera)
 
@@ -57,16 +58,7 @@ export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarIn
     notas: false,
   })
 
-  // Cierra el dropdown de columnas al hacer clic en cualquier parte fuera de él
-  useEffect(() => {
-    const cerrarSiClickFuera = (e) => {
-      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
-        setShowColumnPicker(false)
-      }
-    }
-    document.addEventListener('mousedown', cerrarSiClickFuera)
-    return () => document.removeEventListener('mousedown', cerrarSiClickFuera)
-  }, [])
+  useClickOutside(pickerRef, () => setShowColumnPicker(false))
 
   // Calcula el array de columnas según visibilidad actual (hook separado para claridad)
   const { colDefs } = useClientesColumnDefs(colsVisible, AccionesCellRenderer)
@@ -118,8 +110,6 @@ export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarIn
         onQuickFilterChange={setQuickFilter}
         colsVisible={colsVisible}
         onToggleColumn={toggleColumn}
-        onAdd={onAdd}
-        addLabel="Agregar Cliente"
         COLUMNAS_TOGGLE={COLUMNAS_TOGGLE}
         showColumnPicker={showColumnPicker}
         onToggleColumnPicker={() => setShowColumnPicker(prev => !prev)}

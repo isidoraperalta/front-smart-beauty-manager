@@ -177,13 +177,13 @@ body {
 }
 
 .sbm-nav-logout {
-  color: var(--sbm-green-700);
+  color: #dc2626;
 }
 
 .sbm-nav-logout:hover,
 .sbm-nav-logout:focus {
-  background: var(--sbm-green-100);
-  color: var(--sbm-green-500);
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .sbm-footer {
@@ -196,11 +196,32 @@ body {
 .sbm-footer-link {
   color: var(--sbm-green-700);
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
 
 .sbm-footer-link:hover {
+  color: var(--sbm-green-600);
   text-decoration: underline;
+}
+
+.sbm-footer-social {
+  color: var(--sbm-green-700);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(35, 144, 137, 0.08);
+  transition: all 0.3s ease;
+}
+
+.sbm-footer-social:hover {
+  background-color: rgba(35, 144, 137, 0.15);
+  color: var(--sbm-green-600);
+  transform: translateY(-2px);
 }
 
 .sbm-card {
@@ -295,6 +316,21 @@ body {
   background: var(--sbm-green-500);
   border-color: var(--sbm-green-500);
   color: #fff;
+}
+
+.sbm-btn-add {
+  background: var(--sbm-green-500);
+  border-color: var(--sbm-green-500);
+  color: #fff;
+  font-weight: 700;
+}
+
+.sbm-btn-add:hover,
+.sbm-btn-add:focus,
+.sbm-btn-add:active {
+  background: var(--sbm-green-700) !important;
+  border-color: var(--sbm-green-700) !important;
+  color: #fff !important;
 }
 
 .sbm-btn-delete {
@@ -507,4 +543,60 @@ body {
     margin-left: 0;
     width: 100%;
   }
+}
+
+/* ── Filtro de rango preset (Estadísticas) ───────────────────── */
+.sbm-preset-btn {
+  background: transparent;
+  border: 1.5px solid var(--sbm-green-300);
+  color: var(--sbm-text-700);
+  font-weight: 600;
+  font-size: 0.72rem;
+  padding: 0.18rem 0.52rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.sbm-preset-btn:hover {
+  background: var(--sbm-green-100);
+  border-color: var(--sbm-green-500);
+  color: var(--sbm-green-700);
+}
+
+.sbm-preset-active {
+  background: var(--sbm-green-200) !important;
+  border: 1.5px solid var(--sbm-green-500) !important;
+  color: var(--sbm-green-700) !important;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.18rem 0.52rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.sbm-date-input {
+  max-width: 125px;
+  font-size: 0.8rem !important;
+  border-color: var(--sbm-green-300) !important;
+}
+
+.sbm-date-input:focus {
+  border-color: var(--sbm-green-500) !important;
+}
+
+/* ── Estado badge inline selector (Calendario citas) ─────────── */
+.sbm-estado-select {
+  border: none;
+  background: transparent;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0 0.15rem;
+  cursor: pointer;
+  border-radius: 4px;
+  appearance: auto;
 }

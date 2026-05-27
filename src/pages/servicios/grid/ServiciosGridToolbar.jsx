@@ -55,10 +55,6 @@ export default function ServiciosGridToolbar({
         </div>
       )}
 
-      <button type="button" className="btn sbm-btn-primary ms-auto" onClick={onAdd}>
-        {addLabel}
-      </button>
-
     </div>
   )
 }
@@ -68,8 +64,6 @@ ServiciosGridToolbar.propTypes = {
   onQuickFilterChange: PropTypes.func.isRequired,
   colsVisible: PropTypes.object.isRequired,
   onToggleColumn: PropTypes.func.isRequired,
-  onAdd: PropTypes.func.isRequired,
-  addLabel: PropTypes.string.isRequired,
   columnToggles: PropTypes.arrayOf(PropTypes.shape({
     field: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,

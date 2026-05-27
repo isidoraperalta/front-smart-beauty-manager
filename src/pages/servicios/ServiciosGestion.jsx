@@ -3,7 +3,7 @@ import { AgGridProvider } from 'ag-grid-react'
 import Layout from '@/components/Layout'
 import ServiciosGrid from './grid/ServiciosGrid'
 import ServiciosModal from './modal/ServiciosModal'
-import ConfirmarEliminacionServiciosModal from './modal/ConfirmarEliminacionServiciosModal'
+import ConfirmarEliminacionModal from '@/components/ConfirmarEliminacionModal'
 import { useServiciosModule } from './hooks/useServiciosModule'
 import { SERVICIOS_TABS } from './config/serviciosConfig'
 
@@ -17,8 +17,6 @@ export default function ServiciosGestion() {
     servicesLookups,
     formData,
     loading,
-    error,
-    success,
     showForm,
     showDeleteModal,
     itemToDelete,
@@ -29,8 +27,6 @@ export default function ServiciosGestion() {
     requestDelete,
     closeDeleteModal,
     confirmDelete,
-    clearError,
-    clearSuccess,
   } = useServiciosModule()
 
   let itemLabel = ''
@@ -44,24 +40,10 @@ export default function ServiciosGestion() {
 
   return (
     <Layout>
-      <section className="sbm-module-page py-3 py-md-4">
-        {error && (
-          <div className="alert alert-danger alert-dismissible fade show" role="alert">
-            {error}
-            <button type="button" className="btn-close" onClick={clearError} />
-          </div>
-        )}
-
-        {success && (
-          <div className="alert alert-success alert-dismissible fade show" role="alert">
-            {success}
-            <button type="button" className="btn-close" onClick={clearSuccess} />
-          </div>
-        )}
-
-        <div className="card border-0 shadow-sm sbm-module-card">
+      <section className="sbm-module-page">
+        <div className="sbm-module-card card shadow-sm">
           <div className="card-header bg-white border-0">
-            <h1 className="h4 mb-0">Gestión de Servicios</h1>
+            <h1 className="fs-5 fw-bold mb-0">✨ Gestión de Servicios</h1>
             <div className="sbm-header-tabs">
               {SERVICIOS_TABS.map((tab) => (
                 <button
@@ -73,6 +55,13 @@ export default function ServiciosGestion() {
                   {tab.label}
                 </button>
               ))}
+              <button
+                type="button"
+                className="sbm-tab-btn sbm-btn-add"
+                onClick={openCreateForm}
+              >
+                + {activeTabConfig.createLabel}
+              </button>
             </div>
           </div>
 
@@ -91,8 +80,6 @@ export default function ServiciosGestion() {
                   servicesLookups={servicesLookups}
                   onInlineUpdate={handleInlineUpdate}
                   onDelete={requestDelete}
-                  onAdd={openCreateForm}
-                  addLabel={activeTabConfig.createLabel}
                 />
               </AgGridProvider>
             )}
@@ -117,11 +104,11 @@ export default function ServiciosGestion() {
       )}
 
       {showDeleteModal && itemToDelete && (
-        <ConfirmarEliminacionServiciosModal
+        <ConfirmarEliminacionModal
           title={`Eliminar ${activeTabConfig.singular}`}
           itemLabel={String(itemLabel)}
-          onConfirm={confirmDelete}
-          onCancel={closeDeleteModal}
+          onConfirmar={confirmDelete}
+          onCancelar={closeDeleteModal}
         />
       )}
     </Layout>

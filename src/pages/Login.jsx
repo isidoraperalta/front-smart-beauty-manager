@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { authService } from '@/services'
 import { authStorage } from '@/utils/auth'
 import sbmLogoBlob from '../../assets/smart-beauty-manager-logo-blob.jpeg'
@@ -11,7 +12,6 @@ export default function Login() {
 
   const [form, setForm] = useState({ username: '', password: '' })
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -21,7 +21,6 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
 
     try {
       const response = await authService.login(form)
@@ -30,9 +29,12 @@ export default function Login() {
       }
 
       authStorage.setToken(response.token)
+      toast.success('¡Sesión iniciada correctamente!')
       navigate(from, { replace: true })
     } catch (err) {
-      setError(err.message || 'No se pudo iniciar sesión')
+      toast.error(err.message || 'No se pudo iniciar sesión', {
+        autoClose: 5000, // 5 segundos para que se lea bien el error
+      })
     } finally {
       setLoading(false)
     }
@@ -62,12 +64,6 @@ export default function Login() {
           <div className="col-lg-7 p-4 p-md-5 sbm-login-form-pane">
             <h2 className="h4 fw-bold mb-2">Iniciar sesión</h2>
             <p className="text-muted mb-4">Ingresa tus credenciales para continuar</p>
-
-            {error && (
-              <div className="alert alert-danger" role="alert">
-                {error}
-              </div>
-            )}
 
             <form onSubmit={handleSubmit}>
               <div className="mb-3">

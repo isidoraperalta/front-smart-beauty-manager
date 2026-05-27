@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import App from './App.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './styles/theme.css'
@@ -12,6 +14,7 @@ createRoot(document.getElementById('root')).render(
   // StrictMode ejecuta cada componente dos veces en desarrollo
   // para detectar efectos secundarios inesperados
   <StrictMode>
+    <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} />
     <App />
   </StrictMode>,
 )

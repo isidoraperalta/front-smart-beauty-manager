@@ -1,0 +1,73 @@
+import { themeQuartz } from 'ag-grid-community'
+
+// ── Tema personalizado con paleta teal ───────────────────────────────────────
+export const sbmTheme = themeQuartz.withParams({
+  accentColor: '#239089',
+  selectedRowBackgroundColor: 'rgba(35, 144, 137, 0.08)',
+  rowHoverColor: 'rgba(35, 144, 137, 0.04)',
+  rangeSelectionBorderColor: '#4bb0a9',
+  checkboxCheckedBackgroundColor: '#239089',
+  checkboxCheckedBorderColor: '#239089',
+})
+
+// ── Textos en español para AG Grid ───────────────────────────────────────────
+export const LOCALE_SPANISH = {
+  page: 'Página',
+  more: 'Más',
+  to: 'a',
+  of: 'de',
+  pageLastRowUnknown: 'última',
+  notPinned: 'Sin anclar',
+  pinned: 'Anclado',
+  pivotChartAndPivotTable: 'Gráfico y tabla dinámica',
+  pivotTable: 'Tabla dinámica',
+  pivotChart: 'Gráfico dinámico',
+  pinLeft: 'Anclar a la izquierda',
+  pinRight: 'Anclar a la derecha',
+  noData: 'Sin datos para mostrar',
+  enabled: 'Habilitado',
+  disabled: 'Deshabilitado',
+  sortAscending: 'Ordenar de menor a mayor',
+  sortDescending: 'Ordenar de mayor a menor',
+  sortBy: 'Ordenar por',
+  apply: 'Aplicar',
+  clear: 'Limpiar',
+  reset: 'Restablecer',
+  search: 'Buscar',
+  blanks: 'En blanco',
+  blank: 'En blanco',
+  notBlank: 'No en blanco',
+  filterOoo: 'Filtrar...',
+  equals: 'Igual a',
+  notEqual: 'No igual a',
+  lessThan: 'Menor que',
+  greaterThan: 'Mayor que',
+  lessThanOrEqual: 'Menor o igual a',
+  greaterThanOrEqual: 'Mayor o igual a',
+  inRange: 'En rango',
+  inRangeStart: 'Inicio',
+  inRangeEnd: 'Fin',
+  greaterThanAndLessThan: 'Mayor que y menor que',
+  contains: 'Contiene',
+  notContains: 'No contiene',
+  startsWith: 'Comienza con',
+  endsWith: 'Termina con',
+  before: 'Antes de',
+  after: 'Después de',
+  and: 'y',
+  or: 'o',
+  dateFormatOoo: 'dd/mm/yyyy',
+  filtersToolPanelHeader: 'Filtros',
+  selectAll: 'Seleccionar todo',
+  selectAllFilteredResults: 'Seleccionar todos los resultados filtrados',
+  addCurrentSelectionToFilter: 'Agregar la selección actual al filtro',
+  clearCurrentSelection: 'Limpiar la selección actual',
+  nothingSelected: 'Nada seleccionado',
+}
+
+// ── Propiedades por defecto para todas las columnas ───────────────────────────
+export const DEFAULT_COL_DEF = {
+  sortable:  true,
+  filter:    true,
+  resizable: true,
+}

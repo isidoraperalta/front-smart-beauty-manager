@@ -3,7 +3,7 @@ import { AgGridProvider } from 'ag-grid-react'
 import Layout from '@/components/Layout'
 import ClientesGrid from './grid/ClientesGrid'
 import AgregarClienteModal from './modal/AgregarClienteModal'
-import ConfirmarEliminacionModal from './modal/ConfirmarEliminacionModal'
+import ConfirmarEliminacionModal from '@/components/ConfirmarEliminacionModal'
 import { useClientes } from './hooks/useClientes'
 
 // Clientes — página orquestadora del módulo clientes.
@@ -18,12 +18,8 @@ export default function Clientes() {
   const {
     clientes,
     loading,
-    error,
-    success,
     showForm,
     setShowForm,
-    clearError,
-    clearSuccess,
     handleGuardar,
     handleAbrirConfirmacionEliminar,
     handleConfirmarEliminar,
@@ -34,26 +30,19 @@ export default function Clientes() {
 
   return (
     <Layout>
-      <section className="sbm-module-page py-3 py-md-4">
-        {/* Mensaje de error (desaparece al cerrar con la X) */}
-        {error && (
-          <div className="alert alert-danger alert-dismissible" role="alert">
-            {error}
-            <button type="button" className="btn-close" onClick={clearError} />
-          </div>
-        )}
-
-        {/* Mensaje de éxito (se cierra solo en 3s o manualmente) */}
-        {success && (
-          <div className="alert alert-success alert-dismissible" role="alert">
-            {success}
-            <button type="button" className="btn-close" onClick={clearSuccess} />
-          </div>
-        )}
-
-        <div className="card border-0 shadow-sm sbm-module-card">
+      <section className="sbm-module-page">
+        <div className="sbm-module-card card shadow-sm">
           <div className="card-header bg-white border-0">
-            <h1 className="h4 mb-0">Gestión de Clientes</h1>
+            <h1 className="fs-5 fw-bold mb-0">👥 Gestión de Clientes</h1>
+            <div className="sbm-header-tabs">
+              <button
+                type="button"
+                className="sbm-tab-btn sbm-btn-add"
+                onClick={() => setShowForm(true)}
+              >
+                + Agregar Cliente
+              </button>
+            </div>
           </div>
 
           <div className="card-body">
@@ -68,7 +57,6 @@ export default function Clientes() {
                   clientes={clientes}
                   onAbrirConfirmacion={handleAbrirConfirmacionEliminar}
                   onEditarInline={handleEditarInline}
-                  onAdd={() => setShowForm(true)}
                 />
               </AgGridProvider>
             )}
@@ -87,8 +75,7 @@ export default function Clientes() {
         {/* Modal de confirmación — se monta solo cuando hay un clienteAEliminar */}
         {clienteAEliminar && (
           <ConfirmarEliminacionModal
-            clienteId={clienteAEliminar}
-            cliente={clientes.find(c => c.id === clienteAEliminar)}
+            itemLabel={clientes.find(c => c.id === clienteAEliminar)?.nombre}
             onConfirmar={handleConfirmarEliminar}
             onCancelar={handleCancelarEliminar}
             cargando={loading}

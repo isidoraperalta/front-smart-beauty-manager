@@ -7,6 +7,14 @@ const getAuthHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
+// ── Manejo de respuestas 401 (token expirado / no autorizado) ─────────────────
+// Si el backend responde con 401, limpiamos el token del localStorage y
+// redirigimos al login para que el usuario vuelva a autenticarse.
+const handleUnauthorized = () => {
+  localStorage.removeItem('sbm_auth_token')
+  window.location.href = '/login'
+}
+
 // ── Extractor de mensajes de error ────────────────────────────────────────────
 // El backend Spring Boot puede devolver dos formatos de error:
 //
@@ -46,6 +54,7 @@ const apiClient = {
         ...getAuthHeaders(),
       },
     })
+    if (response.status === 401) return handleUnauthorized()
     if (!response.ok) throw new Error(await getErrorMessage(response))
     return response.json()
   },
@@ -72,6 +81,7 @@ const apiClient = {
       },
       body: JSON.stringify(data),
     })
+    if (response.status === 401) return handleUnauthorized()
     if (!response.ok) throw new Error(await getErrorMessage(response))
     return response.json()
   },
@@ -83,6 +93,7 @@ const apiClient = {
         ...getAuthHeaders(),
       },
     })
+    if (response.status === 401) return handleUnauthorized()
     if (!response.ok) throw new Error(await getErrorMessage(response))
     return response.ok
   },

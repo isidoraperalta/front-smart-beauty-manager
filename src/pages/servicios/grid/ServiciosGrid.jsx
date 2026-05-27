@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
+import { useMemo, useRef, useState, useCallback } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { sbmTheme, LOCALE_SPANISH, DEFAULT_COL_DEF } from './agGridConfig'
 import PropTypes from 'prop-types'
 import ServiciosGridToolbar from './ServiciosGridToolbar'
 import { useServiciosColumnDefs } from './useServiciosColumnDefs'
 import { SERVICIOS_TOGGLE_COLUMNS, SERVICIOS_DEFAULT_VISIBLE_COLUMNS } from '../config/serviciosConfig'
+import { useClickOutside } from '@/hooks/useClickOutside'
 
 function AccionesCellRenderer({ data, context }) {
   return (
@@ -40,16 +41,7 @@ export default function ServiciosGrid({
   const [showColumnPicker, setShowColumnPicker] = useState(false)
   const [colsVisible, setColsVisible] = useState(SERVICIOS_DEFAULT_VISIBLE_COLUMNS[entityKey] || {})
 
-  useEffect(() => {
-    const cerrarSiClickFuera = (event) => {
-      if (pickerRef.current && !pickerRef.current.contains(event.target)) {
-        setShowColumnPicker(false)
-      }
-    }
-
-    document.addEventListener('mousedown', cerrarSiClickFuera)
-    return () => document.removeEventListener('mousedown', cerrarSiClickFuera)
-  }, [])
+  useClickOutside(pickerRef, () => setShowColumnPicker(false))
 
   const { colDefs } = useServiciosColumnDefs(entityKey, colsVisible, servicesLookups, AccionesCellRenderer)
   const defaultColDef = useMemo(() => DEFAULT_COL_DEF, [])
@@ -79,8 +71,6 @@ export default function ServiciosGrid({
         onQuickFilterChange={setQuickFilter}
         colsVisible={colsVisible}
         onToggleColumn={toggleColumn}
-        onAdd={onAdd}
-        addLabel={addLabel}
         columnToggles={SERVICIOS_TOGGLE_COLUMNS[entityKey] || []}
         showColumnPicker={showColumnPicker}
         onToggleColumnPicker={() => setShowColumnPicker((prev) => !prev)}

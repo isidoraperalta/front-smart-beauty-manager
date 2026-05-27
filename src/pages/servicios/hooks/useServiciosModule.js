@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { toast } from 'react-toastify'
 import {
   accionesService,
   categoriasService,
@@ -23,8 +24,6 @@ const SERVICE_LOOKUP = {
 export function useServiciosModule() {
   const [activeTab, setActiveTab] = useState('servicios')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [success, setSuccess] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState(null)
@@ -64,8 +63,6 @@ export function useServiciosModule() {
 
   const loadAllServicesData = useCallback(async () => {
     setLoading(true)
-    setError(null)
-
     try {
       const [servicios, tipos, categorias, acciones] = await Promise.all([
         serviciosService.getAll(),
@@ -76,7 +73,7 @@ export function useServiciosModule() {
 
       setServicesData({ servicios, tipos, categorias, acciones })
     } catch (err) {
-      setError(`No se pudo cargar el módulo de servicios: ${err.message}`)
+      toast.error(`No se pudo cargar el módulo de servicios: ${err.message}`)
     } finally {
       setLoading(false)
     }
@@ -86,12 +83,6 @@ export function useServiciosModule() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadAllServicesData()
   }, [loadAllServicesData])
-
-  useEffect(() => {
-    if (!success) return undefined
-    const timer = setTimeout(() => setSuccess(null), 3000)
-    return () => clearTimeout(timer)
-  }, [success])
 
   const activeRows = useMemo(() => {
     if (activeTab === 'servicios') {
@@ -142,9 +133,9 @@ export function useServiciosModule() {
 
       await loadAllServicesData()
       closeForm()
-      setSuccess(`${activeLabel} guardado correctamente`)
+      toast.success(`${activeLabel} guardado correctamente`)
     } catch (err) {
-      setError(`No se pudo guardar el ${activeLabel.toLowerCase()}: ${err.message}`)
+      toast.error(`No se pudo guardar el ${activeLabel.toLowerCase()}: ${err.message}`)
     }
   }
 
@@ -153,9 +144,9 @@ export function useServiciosModule() {
       const payload = buildServiciosPayload(activeTab, rowData)
       await activeService.update(rowData.id, payload)
       await loadAllServicesData()
-      setSuccess(`${activeLabel} actualizado correctamente`)
+      toast.success(`${activeLabel} actualizado correctamente`)
     } catch (err) {
-      setError(`No se pudo actualizar el ${activeLabel.toLowerCase()}: ${err.message}`)
+      toast.error(`No se pudo actualizar el ${activeLabel.toLowerCase()}: ${err.message}`)
     }
   }
 
@@ -175,16 +166,13 @@ export function useServiciosModule() {
     try {
       await activeService.delete(itemToDelete.id)
       await loadAllServicesData()
-      setSuccess(`${activeLabel} eliminado correctamente`)
+      toast.success(`${activeLabel} eliminado correctamente`)
     } catch (err) {
-      setError(`No se pudo eliminar el ${activeLabel.toLowerCase()}: ${err.message}`)
+      toast.error(`No se pudo eliminar el ${activeLabel.toLowerCase()}: ${err.message}`)
     } finally {
       closeDeleteModal()
     }
   }
-
-  const clearError = () => setError(null)
-  const clearSuccess = () => setSuccess(null)
 
   return {
     activeTab,
@@ -194,8 +182,6 @@ export function useServiciosModule() {
     servicesData,
     formData,
     loading,
-    error,
-    success,
     showForm,
     showDeleteModal,
     itemToDelete,
@@ -206,9 +192,6 @@ export function useServiciosModule() {
     requestDelete,
     closeDeleteModal,
     confirmDelete,
-    clearError,
-    clearSuccess,
-    setSuccess,
     servicesLookups,
   }
 }
