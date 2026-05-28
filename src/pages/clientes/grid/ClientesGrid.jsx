@@ -76,6 +76,7 @@ export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarIn
       telefono,
       direccion,
       fechaNacimiento,
+      fechaRegistro,
       notas,
     } = params.data
 
@@ -85,6 +86,7 @@ export default function ClientesGrid({ clientes, onAbrirConfirmacion, onEditarIn
       telefono,
       direccion,
       fechaNacimiento,
+      fechaRegistro,
       notas,
     })
   }, [onEditarInline])

@@ -106,11 +106,11 @@ export default function ListaCitas({ citas, clientes = [], servicios = [], accio
   const [colsVisible, setColsVisible] = useState({
     estado: true,
     lugar: true,
-    descuento: false,
-    cargoExtra: false,
+    descuento: true,
+    cargoExtra: true,
     valorTotal: true,
     diasParaRetocar: true,
-    notas: false,
+    notas: true,
   })
 
   // Cierra el dropdown de columnas al hacer clic fuera
@@ -146,16 +146,18 @@ export default function ListaCitas({ citas, clientes = [], servicios = [], accio
       headerName: 'Cliente',
       field: 'clienteId',
       editable: true,
+      valueGetter: ({ data }) => {
+        const id = data?.cliente?.id ?? data?.clienteId
+        return clientes.find(c => c.id === id)?.nombre ?? null
+      },
+      valueSetter: ({ data, newValue }) => {
+        const c = clientes.find(c => c.nombre === newValue)
+        data.clienteId = c?.id ?? data.cliente?.id
+        return true
+      },
       cellEditor: 'agSelectCellEditor',
-      cellEditorParams: { 
-        values: clientes.map(c => ({ id: c.id, label: c.nombre })),
-        formatValue: (value) => value?.label || String(value),
-      },
-      valueFormatter: ({ data }) => {
-        if (data.cliente?.nombre) return data.cliente.nombre
-        if (data.clienteId) return clientes.find(c => c.id === data.clienteId)?.nombre || '—'
-        return '—'
-      },
+      cellEditorParams: { values: clientes.map(c => c.nombre) },
+      valueFormatter: ({ value }) => value || '—',
       flex: 1,
       minWidth: 120,
     },
@@ -163,35 +165,35 @@ export default function ListaCitas({ citas, clientes = [], servicios = [], accio
       headerName: 'Servicio',
       field: 'servicioId',
       editable: true,
+      valueGetter: ({ data }) => {
+        const id = data?.servicio?.id ?? data?.servicioId
+        const s = servicios.find(s => s.id === id)
+        if (!s) return null
+        const accion = s.accion?.nombre
+        const mostrarAccion = accion && accion.toLowerCase() !== 'no aplica'
+        return mostrarAccion ? `${s.tipo?.nombre || '?'} — ${accion}` : (s.tipo?.nombre || '?')
+      },
+      valueSetter: ({ data, newValue }) => {
+        const s = servicios.find(s => {
+          const accion = s.accion?.nombre
+          const mostrarAccion = accion && accion.toLowerCase() !== 'no aplica'
+          const label = mostrarAccion ? `${s.tipo?.nombre || '?'} — ${accion}` : (s.tipo?.nombre || '?')
+          return label === newValue
+        })
+        data.servicioId = s?.id ?? data.servicio?.id
+        return true
+      },
       cellEditor: 'agSelectCellEditor',
-      cellEditorParams: { 
-        values: servicios.map(s => ({ id: s.id, label: s.nombre })),
-        formatValue: (value) => value?.label || String(value),
+      cellEditorParams: {
+        values: servicios.map(s => {
+          const accion = s.accion?.nombre
+          const mostrarAccion = accion && accion.toLowerCase() !== 'no aplica'
+          return mostrarAccion ? `${s.tipo?.nombre || '?'} — ${accion}` : (s.tipo?.nombre || '?')
+        }),
       },
-      valueFormatter: ({ data }) => {
-        if (data.servicio?.nombre) return data.servicio.nombre
-        if (data.servicioId) return servicios.find(s => s.id === data.servicioId)?.nombre || '—'
-        return '—'
-      },
+      valueFormatter: ({ value }) => value || '—',
       flex: 1,
-      minWidth: 140,
-    },
-    {
-      headerName: 'Acción',
-      field: 'accionId',
-      editable: true,
-      cellEditor: 'agSelectCellEditor',
-      cellEditorParams: { 
-        values: acciones.map(a => ({ id: a.id, label: a.nombre })),
-        formatValue: (value) => value?.label || String(value),
-      },
-      valueFormatter: ({ data }) => {
-        if (data.servicio?.accion?.nombre) return data.servicio.accion.nombre
-        if (data.accionId) return acciones.find(a => a.id === data.accionId)?.nombre || '—'
-        return '—'
-      },
-      flex: 1,
-      minWidth: 130,
+      minWidth: 200,
     },
     {
       field: 'estado',
@@ -273,7 +275,7 @@ export default function ListaCitas({ citas, clientes = [], servicios = [], accio
       editable: false,
       pinned: 'right',
     },
-  ], [colsVisible])
+  ], [colsVisible, clientes, servicios, acciones])
 
   const context = useMemo(() => ({ onEliminar }), [onEliminar])
 

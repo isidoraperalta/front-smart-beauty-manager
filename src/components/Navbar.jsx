@@ -47,7 +47,7 @@ export default function Navbar() {
             📊 Estadísticas
           </button>
           <button type="button" className="sbm-nav-link sbm-nav-logout" onClick={handleLogout}>
-            🚪 Cerrar sesión
+            Cerrar sesión
           </button>
         </div>
 

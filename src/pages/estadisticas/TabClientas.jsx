@@ -73,9 +73,13 @@ export default function TabClientas({ fechaInicio, fechaFin }) {
       return fechaA.getMonth() - fechaB.getMonth() || fechaA.getDate() - fechaB.getDate()
     })
 
-  // Clientas inactivas (sin cita en el rango global)
-  const clientesActivos = new Set(citasFiltradas.map(c => c.cliente?.id))
-  const inactivas = clientes.filter(cl => !clientesActivos.has(cl.id))
+  // Clientas inactivas: sin cita en los últimos 90 días desde hoy (fijo, independiente del rango)
+  const hace90dias = new Date()
+  hace90dias.setDate(hace90dias.getDate() - 90)
+  const clientesActivosUltimos90 = new Set(
+    citas.filter(c => c.fechaHora && new Date(c.fechaHora) >= hace90dias).map(c => c.cliente?.id)
+  )
+  const inactivas = clientes.filter(cl => !clientesActivosUltimos90.has(cl.id))
 
   return (
     <div>
@@ -134,7 +138,7 @@ export default function TabClientas({ fechaInicio, fechaFin }) {
         {/* Clientas inactivas */}
         <div className="col-md-6">
           <h6 className="fw-bold mb-2" style={{ color: 'var(--sbm-text-900)' }}>
-            😴 Clientas inactivas
+            😴 Clientas inactivas <span className="fw-normal text-muted" style={{ fontSize: '0.75rem' }}>(sin citas en 90 días)</span>
           </h6>
           <div style={{ maxHeight: 160, overflowY: 'auto' }}>
             {inactivas.length === 0 ? (
@@ -149,11 +153,6 @@ export default function TabClientas({ fechaInicio, fechaFin }) {
                     {cl.nombre?.charAt(0).toUpperCase()}
                   </span>
                   <span className="flex-grow-1">{cl.nombre}</span>
-                  <span className="text-muted" style={{ fontSize: '0.7rem', whiteSpace: 'nowrap' }}>
-                    {ultimaCita
-                      ? 'Última: ' + new Date(ultimaCita.fechaHora).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })
-                      : 'Sin citas'}
-                  </span>
                 </div>
               )
             })}
